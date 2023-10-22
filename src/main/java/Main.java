@@ -2,11 +2,14 @@
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("На сколько человек хотите разделить покупку?");
-        int n = scan.nextInt();
+        //Уважаемый ревьюрер, я забыл при прошлом отправлении сделать коммит, прошу прощения.
         while(true)
         {
+            System.out.println("На сколько человек хотите разделить покупку?");
+            Scanner scan = new Scanner(System.in);
+
+            int n = GetNumber(scan);
+
             if(n == 1)
             {
                 System.out.println("Ощибка! Введите значение >1!");
@@ -17,51 +20,96 @@ public class Main {
             }
             else
             {
-                double allPrice = 0;
-                String allNames = "";
+                double prices = 0.0;
+                String products = "";
 
                 while(true)
                 {
                     System.out.println("Введите название товара или Завершить!");
-                    String name = scan.next();
+                    scan.nextLine();
+                    String name = scan.nextLine();
                     if(name.equalsIgnoreCase("Завершить"))
                     {
-                        System.out.println("Ваши товары: " + allNames);
-                        Res(allPrice / n);
+                        System.out.println("Ваши товары: " + products);
+                        ShowResult(prices / n);
+                        scan.close();
                         break;
                     }
                     else
                     {
-                        allNames = allNames + name + " ";
-                        System.out.println("Введите цену товара!");
-                        double price = scan.nextDouble();
-                        allPrice += price;
+                        double price = GetProductPrice(scan);
+                        prices = GetPrices(price, prices);
+                        products = GetProducts(name, products);
                     }
                 }
                 break;
             }
         }
-
     }
 
-    public static void Res(double price)
+    public static double GetProductPrice(Scanner scan)
     {
-        String res = "Цена для каждого: %.2f %s";
-        if(Math.floor(price) == 11)
+        while(true)
         {
-            System.out.println(String.format(res, price, "рублей"));
+            System.out.println("Введите цену товара!");
+            if(scan.hasNextDouble())
+            {
+                return scan.nextDouble();
+            }
+            else
+            {
+                scan.nextLine();
+                System.out.println("Ошибка! Введите дробное число!");
+            }
+        }
+    }
+
+    public static int GetNumber(Scanner scan)
+    {
+        while(true)
+        {
+            if(scan.hasNextInt())
+            {
+                return scan.nextInt();
+            }
+            else
+            {
+                scan.nextLine();
+                System.out.println("Ошибка! Введите число!");
+            }
+        }
+    }
+
+    public static String GetProducts(String name, String allNames)
+    {
+        allNames = allNames + name + ". ";
+        return allNames;
+    }
+
+    public static double GetPrices(double price, double allPrice)
+    {
+        allPrice += price;
+        return allPrice;
+    }
+
+    public static void ShowResult(double price)
+    {
+        String result = "Цена для каждого: %.2f %s";
+        if(Math.floor(price) > 11 && Math.floor(price) < 15)
+        {
+            System.out.println(String.format(result, price, "рублей"));
         }
         else if(Math.floor(price) % 10 == 1)
         {
-            System.out.println(String.format(res, price, "рубль"));
+            System.out.println(String.format(result, price, "рубль"));
         }
         else if(Math.floor(price) % 10 > 1 && Math.floor(price) % 10 < 5)
         {
-            System.out.println(String.format(res, price, "рубля"));
+            System.out.println(String.format(result, price, "рубля"));
         }
         else
         {
-            System.out.println(String.format(res, price, "рублей"));
+            System.out.println(String.format(result, price, "рублей"));
         }
     }
 }
